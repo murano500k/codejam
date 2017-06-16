@@ -23,8 +23,8 @@ void ld_sort( long double list[], int length ) ;
 
 int main() {
     string buf;
-    ifstream fin ("/home/artem/projects/cpp/codejam/horse/A-large-practice.in");
-    ofstream fout("/home/artem/projects/cpp/codejam/horse/Horses-large.out");
+    ifstream fin ("../horse/A-large-practice.in");
+    ofstream fout("../horse/Horses-large.out");
     cout << fixed << setprecision(6);
     fout << fixed << setprecision(6);
     int next_action=TESTCASES;
