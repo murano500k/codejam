@@ -8,16 +8,16 @@ using namespace std;
 enum ACTION{
     TESTCASES,
     GENERAL,
-    HORSE,
+    ITEM,
     RESULT
 };
 int parse_testcases(string s);
-int parse_length(string s);
-double parse_horse(string s,int l);
+int parse_max_pancakes(string s);
+long double parse_cake(string s, int l);
 
 
 
-int parse_horses_num(string s);
+int parse_items_num(string s);
 
 void ld_sort( long double list[], int length ) ;
 
@@ -43,16 +43,16 @@ int main() {
                 break;
             case GENERAL:
                 //get testcase info
-                l=parse_length(buf);
-                horses_num=parse_horses_num(buf);
+                l= parse_max_pancakes(buf);
+                horses_num= parse_items_num(buf);
                 cout<<"testcase"<<iter_t+1<<" l="<<l<<" h="<<horses_num<<endl;
                 iter_h=0;
                 horses= new long  double[horses_num];
-                next_action=HORSE;
+                next_action=ITEM;
                 break;
-            case HORSE:
+            case ITEM:
                 //Get time left for horse
-                horses[iter_h]=parse_horse(buf,l);
+                horses[iter_h]= parse_cake(buf, l);
                 iter_h++;
                 if(iter_h==horses_num){
                     next_action=GENERAL;
@@ -88,23 +88,23 @@ int parse_testcases(string s){
     return count;
 }
 
-int parse_length(string s){
+int parse_max_pancakes(string s){
     std::istringstream iss(s);
     int l;
     iss >> l;
     return l;
 }
-int parse_horses_num(string s){
+int parse_items_num(string s){
     std::istringstream iss(s);
     int horses_num;
     iss >> horses_num;
     iss >> horses_num;
     return horses_num;
 }
-double parse_horse(string s, int l){
+long double parse_cake(string s, int l){
     std::istringstream iss(s);
     int pos, speed;
     iss >> pos;
     iss >> speed;
-    return ((double)l-pos)/speed;
+    return ((long double)l-pos)/speed;
 }
