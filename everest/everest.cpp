@@ -7,6 +7,7 @@
 #include <list>
 #include <iterator>
 #include <set>
+#include <climits>
 
 using namespace std;
 
@@ -39,11 +40,11 @@ void getData(int i,string buf) ;
 int getResult();
 
 
-int bestTimeToFinish(set<Tour> completedTours, int currentCamp, int timePassed);
+int findBestPath(int startingFrom, int startTime, Tour **vTemp);
 
 int tMax=0;
 int C=-1;
-vector<Tour> tours;
+vector<Tour> paths;
 int main(){
 
     string buf;
@@ -60,7 +61,7 @@ int main(){
             cout<<"Case #"<<iter_t<<endl;
             C=stoi(buf);
             i=1;
-            tours.clear();
+            paths.clear();
             continue;
         } else {
             getData(i++, buf);
@@ -85,39 +86,60 @@ void getData(int i,string buf) {
     int startCamp= (int) floor((i + 1) / 2);
     Tour tour(startCamp, buf);
     //tour.toString();
-    tours.insert(tours.end(),tour);
+    paths.insert(paths.end(),tour);
 }
 
 
 int getResult(){
-    sort( tours.begin( ), tours.end( ), [ ]( const Tour& lhs, const Tour& rhs )
-    {
-        return lhs.campInterval.first < rhs.campInterval.first;
-    });
-    int bestTime=-1;
-    for (int i = 0; i < C; ++i) {
-        Tour startTour=tours.at(i);
-        set<Tour> completedTours;
-        completedTours.insert(completedTours.end(), startTour);
-        int timeToFinish=bestTimeToFinish(completedTours, startTour.campInterval.second, startTour.duration);
-        cout<<"\tbestTime="<<timeToFinish<<endl;
-        if(bestTime==-1) bestTime=timeToFinish;
-        else if(timeToFinish!=-1){
-            if(bestTime>timeToFinish) bestTime=timeToFinish;
+    int  bestResults[paths.size()];
+    Tour* vTemp[paths.size()];
+    for (int i = 0; i < paths.size(); ++i) {
+        for (int j = 0; j < paths.size(); ++j) {
+            vTemp[j]=&paths.at(j);
         }
+        Tour* tour=vTemp[i];
+        vTemp[i]=0;
+        int end=tour->campInterval.second;
+        int endT=tour->timeInterval.first;
+        bestResults[i]=findBestPath(end,endT,vTemp, vTemp+paths.size());
     }
-    return bestTime;
+    int best=bestResults[0];
+    for (int j = 0; j < paths.size(); ++j) {
+        cout<<j<<". r="<<best<<endl;
+        if(best>bestResults[j])best=bestResults[j];
+    }
+    cout<<"best="<<best<<endl;
+}
+int findBestPath(int startingFrom, int startTime, Tour *vTempStart, Tour *vTempEnd ){
+    int startDayTime=startTime%24;
+    int index1=startingFrom*2-2;
+    int index2=index1+1;
+    Tour*t1=vTempStart;
+    Tour*t2=vTemp[index2];
+    int wait1= INT8_MAX;
+    int wait2= INT8_MAX;
+    if(t1)wait1= (int) fabs(t1->timeInterval.first - startDayTime);
+    if(t2)wait2= (int) fabs(t2->timeInterval.first - startDayTime);
+    if(wait1==INT8_MAX && wait2==INT8_MAX) return startTime;
+    if(wait1>wait2){
+        vTemp[index2]=0;
+        return findBestPath(index2, startTime+wait2,vTemp);
+    } else {
+        vTemp[index1]=0;
+        return findBestPath(index1,startTime+wait1,vTemp);
+    }
 }
 
+/*
 
 int bestTimeToFinish(set<Tour> completedTours, int currentCamp, int timePassed){
-    if(completedTours.size()==tours.size())
+    if(completedTours.size()==paths.size())
         return timePassed;
 
     int currentDayTime=timePassed%24;
     int timeToFinish=-1;
-    for (int i = 0; i < tours.size(); ++i) {
-        const Tour nextTour=tours.at(i);
+    for (int i = 0; i < paths.size(); ++i) {
+        const Tour nextTour=paths.at(i);
         set<Tour>::const_iterator it = completedTours.find(nextTour);
         set<Tour>::const_iterator it2 = completedTours.end();
         if (it != it2)continue;
@@ -136,4 +158,5 @@ int bestTimeToFinish(set<Tour> completedTours, int currentCamp, int timePassed){
     }
     return timeToFinish;
 }
+*/
 
