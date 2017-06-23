@@ -7,12 +7,12 @@
 #include <list>
 #include <iterator>
 #include <set>
-#include <climits>
+#include <zconf.h>
 
 using namespace std;
 
 typedef std::pair<int, int> Range;
-
+const int MAX_TIME=1000000000;
 class Tour{
 
 public:
@@ -39,12 +39,20 @@ void getData(int i,string buf) ;
 
 int getResult();
 
+int findBestPath(int startingFrom, int startTime, bool * passed );
 
-int findBestPath(int startingFrom, int startTime, Tour **vTemp);
+int getAllTime(int waitTime);
+
+int getWaitTime(int index, int time, bool *pBoolean);
+
+int getEnd(int index);
+
+bool allPassed(bool *pBoolean);
 
 int tMax=0;
-int C=-1;
+int N=-1;
 vector<Tour> paths;
+int iter_t;
 int main(){
 
     string buf;
@@ -53,29 +61,29 @@ int main(){
     getline(fin,buf);
     tMax=std::stoi(buf);
     cout<<"testcases count = "<<tMax<<endl;
-    int iter_t=1;
+    iter_t=1;
     int i=0;
     while(getline(fin,buf)) {
         //cout<<"buf="<<buf<<endl;
-        if(C==-1) {
+        if(N==-1) {
             cout<<"Case #"<<iter_t<<endl;
-            C=stoi(buf);
+            N=stoi(buf);
             i=1;
             paths.clear();
             continue;
         } else {
             getData(i++, buf);
-            if(i>2*C) {
+            if(i>2*N) {
                 int result=getResult();
                 cout<<"Case #"<<iter_t<<": "<<result<<endl;
                 fout<<"Case #"<<iter_t<<": "<<result<<endl;
                 iter_t++;
-                C=-1;
+                N=-1;
             }
         }
 
 
-        if(iter_t==2)break;
+      // if(iter_t==7)break;
     }
     fout.close();
 }
@@ -89,45 +97,95 @@ void getData(int i,string buf) {
     paths.insert(paths.end(),tour);
 }
 
-
+int hops=0;
 int getResult(){
-    int  bestResults[paths.size()];
-    Tour* vTemp[paths.size()];
     for (int i = 0; i < paths.size(); ++i) {
-        for (int j = 0; j < paths.size(); ++j) {
-            vTemp[j]=&paths.at(j);
-        }
-        Tour* tour=vTemp[i];
-        vTemp[i]=0;
+        cout<<i<<". camps "<<paths[i].campInterval.first<<"->"<<paths[i].campInterval.second<<"\t";
+        cout<<" time "<<paths[i].timeInterval.first<<"->"<<paths[i].timeInterval.second<<endl;
+    }
+    int  bestResults[paths.size()];
+    bool passedCamps[paths.size()];
+    for (int i = 0; i < 2; ++i) {
+        for (int ip = 0; ip < paths.size(); ++ip) passedCamps[ip]=false;
+        hops=0;
+        Tour* tour=&paths[i];
+        passedCamps[i]= true;
         int end=tour->campInterval.second;
-        int endT=tour->timeInterval.first;
-        bestResults[i]=findBestPath(end,endT,vTemp, vTemp+paths.size());
+        int endT=tour->timeInterval.second;
+        cout<<"case: \n";
+        tour->toString();
+        bestResults[i]=findBestPath(end,endT,passedCamps);
+        cout<<"\n\tresult"<<i<<" "<<bestResults[i]<<endl<<endl;
     }
     int best=bestResults[0];
-    for (int j = 0; j < paths.size(); ++j) {
-        cout<<j<<". r="<<best<<endl;
-        if(best>bestResults[j])best=bestResults[j];
+    for (int j = 0; j < 2; ++j) {
+        if(best>bestResults[j]) best=bestResults[j];
     }
-    cout<<"best="<<best<<endl;
+    return best;
 }
-int findBestPath(int startingFrom, int startTime, Tour *vTempStart, Tour *vTempEnd ){
+int findBestPath(int startingFrom, int startTime, bool * passed ){
+    if(iter_t==99)sleep(1);
+    if(allPassed(passed))
+        return startTime;
+    //hops++;
+    if(iter_t==99)cout<<iter_t<<". findbestpath from c="<<startingFrom<<" startTime="<<startTime<<"\n";
     int startDayTime=startTime%24;
-    int index1=startingFrom*2-2;
-    int index2=index1+1;
-    Tour*t1=vTempStart;
-    Tour*t2=vTemp[index2];
-    int wait1= INT8_MAX;
-    int wait2= INT8_MAX;
-    if(t1)wait1= (int) fabs(t1->timeInterval.first - startDayTime);
-    if(t2)wait2= (int) fabs(t2->timeInterval.first - startDayTime);
-    if(wait1==INT8_MAX && wait2==INT8_MAX) return startTime;
-    if(wait1>wait2){
-        vTemp[index2]=0;
-        return findBestPath(index2, startTime+wait2,vTemp);
-    } else {
-        vTemp[index1]=0;
-        return findBestPath(index1,startTime+wait1,vTemp);
+
+    int index=(startingFrom-1)*2;
+    int wait1=getWaitTime(index, startDayTime, passed);
+    int wait2=getWaitTime(index+1,startDayTime,passed);
+    int end1=paths[index].campInterval.second;
+    int end2=paths[index+1].campInterval.second;
+
+    if(wait1==MAX_TIME && wait2==MAX_TIME){
+        for (int i = 0; i < paths.size(); ++i) {
+
+            if(!*(passed+i)){
+                if(iter_t==99)cout<<"r="<<MAX_TIME<<endl;
+                return MAX_TIME;
+            }
+        }
+        if(iter_t==99)cout<<"r="<<startTime<<endl;
+        return startTime;
     }
+    int result1=MAX_TIME;
+    int result2=MAX_TIME;
+    if(wait1<MAX_TIME) {
+        *(passed+index)=true;
+        result1=findBestPath(end1, startTime+wait1+paths[index].duration,passed);
+        *(passed+index)=false;
+    }
+    if(wait2<MAX_TIME) {
+        *(passed+index+1)=true;
+        result2=findBestPath(end2, startTime+wait2+paths[index+1].duration,passed);
+        *(passed+index+1)=false;
+    }
+    if(iter_t==99)if(result1<MAX_TIME) cout<<"\tr1="<<result1;
+    if(iter_t==99)if(result2<MAX_TIME) cout<<"\tr2="<<result2;
+    if(iter_t==99)cout<<endl;
+    if(result1<MAX_TIME && result1<result2)return result1;
+    else if(result2<MAX_TIME)return result2;
+    else return MAX_TIME;
+}
+
+bool allPassed(bool *passed) {
+    for (int i = 0; i < paths.size(); ++i) {
+        if(!*(passed+i)) return false;
+    }
+    return true;
+}
+
+int getEnd(int index) {
+    return paths[index].campInterval.second;
+}
+
+int getWaitTime(int index, int startDayTime, bool *passed) {
+    Tour * t1=&paths[index];
+    bool campPassed=*(passed+index);
+    if(campPassed) return MAX_TIME;
+    int wait= (int) fabs(t1->timeInterval.first - startDayTime);
+    if(startDayTime>t1->timeInterval.first) wait=24-wait;
+    return wait;
 }
 
 /*
