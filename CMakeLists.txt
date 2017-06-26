@@ -13,5 +13,6 @@ add_executable(g googlement/g.cpp)
 add_executable(test2 test/test2.cpp)
 add_executable(gv2 googlement/gv2.cpp)
 add_executable(everest everest/everest.cpp)
-add_executable(pixels pixels/pixels.cpp)
+add_executable(pixels pixels/dijkstra2.h pixels/dijkstra2.cpp pixels/pixels.cpp )
+
 add_executable(dijkstra pixels/dijkstra.cpp)
