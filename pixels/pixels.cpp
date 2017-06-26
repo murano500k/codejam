@@ -7,7 +7,7 @@
 #include <list>
 #include <iterator>
 #include <set>
-#include "dijkstra2.h"
+#include "dijkstra.h"
 
 using namespace std;
 
@@ -36,7 +36,7 @@ int main(){
             iss>>N;
             iss>>D;
             g=new Graph(sizeX, sizeY, D);
-            cout<<"Start Case #"<<iter_t<<" sizeX="<<g->sizeX<<" sizeY="<<g->sizeY<<" N="<<N<<" D="<<g->D<<endl;
+            //cout<<"Start Case #"<<iter_t<<" sizeX="<<g->sizeX<<" sizeY="<<g->sizeY<<" N="<<N<<" D="<<g->D<<endl;
             i=1;
             continue;
         } else {
@@ -47,8 +47,9 @@ int main(){
             iss>>diff;
             g->parseEdge(row,column,diff);
             if(i==N) {
-                g->initEdges();
-                long long result=g->shortestPath(0, iter_t);
+                g->initEdgesHorizontal();
+                g->initEdgesVertical();
+                long long result=g->shortestPath(0);
                 if(result==INF){
                     cout<<"Case #"<<iter_t<<": IMPOSSIBLE"<<endl;
                     fout<<"Case #"<<iter_t<<": IMPOSSIBLE"<<endl;
@@ -62,7 +63,7 @@ int main(){
             }
             i++;
         }
-        if(iter_t==6)break;
+        //if(iter_t==5)break;
         //break;
     }
     fout.close();
