@@ -1,7 +1,8 @@
 #include<bits/stdc++.h>
 
 using namespace std;
-# define INF INT_MAX
+# define INF LONG_LONG_MAX
+
 
 // iPair ==>  Integer Pair
 typedef pair<long long, long long> iPair;
@@ -45,5 +46,7 @@ public:
     void checkEdgesVertical();
 
     void checkEdgesHorizontal(long long int *result);
+
+    void checkValid();
 };
 

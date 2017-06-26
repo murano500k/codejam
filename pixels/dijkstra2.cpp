@@ -17,6 +17,22 @@ void Graph::parseEdge(long long row, long long column, long long val){
     predefined.insert(predefined.end(),make_pair(index,val));
     addEdge(0,index,val);
 }
+void Graph::checkValid(){
+    vector< iPair >::iterator iter_p=predefined.begin();
+    vector< iPair >::iterator iter_pt=predefined.begin();
+    while(iter_p<predefined.end()){
+        long long index=iter_p->first;
+        long long value=iter_p->second;
+        while(iter_pt<predefined.end()){
+            long long indexT=iter_pt->first;
+            long long valueT=iter_pt->second;
+            if(index==indexT) continue;
+
+        }
+
+    }
+
+}
 
 void Graph::addEdge(long long u, long long v, long long w)
 {
@@ -75,13 +91,13 @@ long long Graph::shortestPath(long long src,long long iter_t)
     }
     long long sum=0;
     // Print shortest distances stored in dist[]
-    cout<<"out:\n";
+    //cout<<"out:\n";
     for (long long i = 1; i <= N; ++i){
-        cout<<dist[i]<<"\t";
-        if(i%sizeX==0) cout<<"\n";
+        //cout<<dist[i]<<"\t";
+        //if(i%sizeX==0) cout<<"\n";
         //printf("%lli \t\t %lli\n", i, dist[i]);
         sum+=dist[i];
-        vector< iPair >::iterator iter_p=predefined.begin();
+        //vector< iPair >::iterator iter_p=predefined.begin();
         /*while(iter_p<predefined.end()){
             if(iter_p->first==i &&  iter_p->second != dist[i]){
                 sum=INF;

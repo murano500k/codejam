@@ -36,7 +36,7 @@ int main(){
             iss>>N;
             iss>>D;
             g=new Graph(sizeX, sizeY, D);
-            cout<<"Start Case #"<<iter_t<<" sizeX="<<g->sizeX<<" sizeY="<<g->sizeY<<" N="<<N<<" D="<<g->D<<endl;
+            //cout<<"Start Case #"<<iter_t<<" sizeX="<<g->sizeX<<" sizeY="<<g->sizeY<<" N="<<N<<" D="<<g->D<<endl;
             i=1;
             continue;
         } else {
@@ -62,7 +62,7 @@ int main(){
             }
             i++;
         }
-        if(iter_t==6)break;
+        //if(iter_t==5)break;
         //break;
     }
     fout.close();
