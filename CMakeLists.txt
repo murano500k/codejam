@@ -16,3 +16,6 @@ add_executable(everest everest/everest.cpp)
 add_executable(pixels pixels/dijkstra.h pixels/dijkstra.cpp pixels/pixels.cpp )
 
 add_executable(dijkstra pixels/dijkstra.cpp)
+add_executable(pflipper pflipper/pflipper.cpp)
+add_executable(tidynum tidynum/tidynum.cpp)
+add_executable(tidynumLarge tidynum/tidynumLarge.cpp)
