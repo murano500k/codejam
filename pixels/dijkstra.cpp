@@ -55,9 +55,15 @@ long long Graph::shortestPath(long long src)
         }
     }
     long long sum=0;
+    //cout<<"\n{\n";
     for (long long i = 1; i <= N; ++i){
-        sum+=dist[i];
+        if(dist[i]<1000){
+            //cout<<dist[i]<<"\t";
+            //if(i%sizeX==0) cout<<endl;
+        }
+        //sum+=dist[i];
     }
+    //cout<<"\n{\n";
     return sum%1000000007;
 }
 void Graph::initEdgesHorizontal(){
