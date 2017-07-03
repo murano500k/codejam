@@ -1,4 +1,4 @@
-// reading a text file
+// https://code.google.com/codejam/contest/5304486/dashboard#s=p1
 #include <fstream>
 #include <string>
 #include <cstring>
